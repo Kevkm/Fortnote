@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Fortnite-style gradient colors -->
+    <color name="fortnote_purple">#3A1C71</color>
+    <color name="fortnote_pink">#D76D77</color>
+    <color name="fortnote_orange">#FFAF7B</color>
+
+    <!-- Accent colors -->
+    <color name="fortnote_blue">#4A90E2</color>
+    <color name="fortnote_teal">#1DE9B6</color>
+    <color name="fortnote_dark_blue">#0D47A1</color>
+
+    <!-- Common UI colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_light">#E0E0E0</color>
+    <color name="gray_dark">#212121</color>
+
+    <!-- Button / FAB tint -->
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+
+    <!-- Backgrounds and text -->
+    <color name="background_main">#121212</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#CCCCCC</color>
+
+    <!-- Shadow / overlay -->
+    <color name="shadow_black">#88000000</color>
+</resources>
