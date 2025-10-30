@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.text.Html;
+
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
     private List<Note> notes;
@@ -43,7 +45,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         String title = note.getTitle().isEmpty() ? "Untitled" : note.getTitle();
         holder.tvTitle.setText(title);
 
-        holder.tvContent.setText(note.getContent());
+         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
+                holder.tvContent.setText(Html.fromHTML(note.getContent(),Html.FROM_HTML_MODE_LEGACY));
+            }else{
+                holder.tvContent.setText(Html.fromHtml(note.getContent()));
+         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
         String dateStr = sdf.format(new Date(note.getTimestamp()));
@@ -76,4 +82,5 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             tvDate = itemView.findViewById(R.id.tvNoteDate);
         }
     }
+
 }
