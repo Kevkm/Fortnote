@@ -4,13 +4,16 @@ import static com.example.fortnote.R.*;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import java.util.Stack;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +27,11 @@ public class NoteEditorActivity extends AppCompatActivity {
     private String noteId;
     private boolean isEditMode = false;
     private boolean isLocked = false;
+
+     // Undo/Redo stacks
+    private final Stack<String> undoStack = new Stack<>();
+    private final Stack<String> redoStack = new Stack<>();
+    private boolean isTextChangingProgrammatically = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,8 @@ public class NoteEditorActivity extends AppCompatActivity {
         Button boldButton = findViewById(R.id.bold_button);
         Button italicButton = findViewById(R.id.italic_button);
         Button underlineButton = findViewById(R.id.under_button);
+        Button undoButton = findViewById(R.id.undo_button);
+        Button redoButton = findViewById(R.id.redo_button);
         FloatingActionButton fabSave = findViewById(R.id.fabSave);
 
         // Check if we're editing an existing note
@@ -89,6 +99,61 @@ public class NoteEditorActivity extends AppCompatActivity {
 
         // Save button
         fabSave.setOnClickListener(v -> saveNote());
+
+         // Undo / Redo listeners
+        undoButton.setOnClickListener(v -> undo());
+        redoButton.setOnClickListener(v -> redo());
+
+        // Text watcher to track changes for undo/redo
+        etNoteContent.addTextChangedListener(new TextWatcher() {
+            private String previousText = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (!isTextChangingProgrammatically) {
+                    previousText = s.toString();
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!isTextChangingProgrammatically) {
+                    undoStack.push(previousText);
+                    redoStack.clear();
+                }
+            }
+        });
+    }
+
+     /** Undo last change */
+    private void undo() {
+        if (!undoStack.isEmpty()) {
+            String lastState = undoStack.pop();
+            redoStack.push(etNoteContent.getText().toString());
+            isTextChangingProgrammatically = true;
+            etNoteContent.setText(lastState);
+            etNoteContent.setSelection(lastState.length());
+            isTextChangingProgrammatically = false;
+        } else {
+            Toast.makeText(this, "Nothing to undo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /** Redo last undone change */
+    private void redo() {
+        if (!redoStack.isEmpty()) {
+            String nextState = redoStack.pop();
+            undoStack.push(etNoteContent.getText().toString());
+            isTextChangingProgrammatically = true;
+            etNoteContent.setText(nextState);
+            etNoteContent.setSelection(nextState.length());
+            isTextChangingProgrammatically = false;
+        } else {
+            Toast.makeText(this, "Nothing to redo", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void applyStyle(int style) {
@@ -147,5 +212,6 @@ public class NoteEditorActivity extends AppCompatActivity {
         finish();
     }
 }
+
 
 
