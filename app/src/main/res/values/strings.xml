@@ -7,4 +7,7 @@
     <string name="b">B</string>
     <string name="i">I</string>
     <string name="u">U</string>
+    <string name="redo">Redo</string>
+    <string name="undo" />
+    <string name="save_note">Save note</string>
 </resources>
