@@ -193,7 +193,7 @@ public class NoteEditorActivity extends AppCompatActivity {
         }
 
         String title = etNoteTitle.getText().toString().trim();
-        String content = Html.toHtml(etNoteContent.getText(),Html.TO_HTML_PARAGRAPH_LINE_CONSEECUTIVE);
+        String content = Html.toHtml(etNoteContent.getText(),Html.TO_HTML_PARAGRAPH_LINE_CONSECUTIVE);
 
         if (title.isEmpty() && content.isEmpty()) {
             Toast.makeText(this, "Note is empty", Toast.LENGTH_SHORT).show();
@@ -212,6 +212,7 @@ public class NoteEditorActivity extends AppCompatActivity {
         finish();
     }
 }
+
 
 
 
