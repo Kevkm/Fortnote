@@ -64,37 +64,39 @@
 
         <Button
             android:id="@+id/bold_button"
-            android:layout_width="wrap_content"
+            android:layout_width="74dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:text="@string/b"
-            android:textStyle="bold"
-            android:layout_marginEnd="8dp" />
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/italic_button"
-            android:layout_width="wrap_content"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:text="@string/i"
-            android:textStyle="italic"
-            android:layout_marginEnd="8dp" />
+            android:textStyle="italic" />
 
         <Button
             android:id="@+id/under_button"
-            android:layout_width="wrap_content"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:text="@string/u" />
 
         <ImageButton
             android:id="@+id/undo_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="drawable/ic_undo" />
+            android:layout_height="39dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="@string/undo"/>
 
         <ImageButton
+            android:id="@+id/redo_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/redo_button"
-            android:src="@drawable/ic_redo" />
+            android:src="@drawable/ic_redo"
+            android:contentDescription="@string/redo" />
 
         <Space
             android:layout_width="0dp"
@@ -105,7 +107,7 @@
             android:id="@+id/fabSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="Save note"
+            android:contentDescription="@string/save_note"
             app:srcCompat="@android:drawable/ic_menu_save"
             app:fabSize="mini" />
 
