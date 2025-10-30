@@ -1,10 +1,12 @@
 package com.example.fortnote;
 
 import static com.example.fortnote.R.*;
+import static com.example.fortnote.R.id.undo_button;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import java.util.Stack;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,7 +31,7 @@ public class NoteEditorActivity extends AppCompatActivity {
     private boolean isEditMode = false;
     private boolean isLocked = false;
 
-     // Undo/Redo stacks
+    // Undo/Redo stacks
     private final Stack<String> undoStack = new Stack<>();
     private final Stack<String> redoStack = new Stack<>();
     private boolean isTextChangingProgrammatically = false;
@@ -36,21 +39,21 @@ public class NoteEditorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note);
+        setContentView(layout.activity_note);
 
-        noteManager = new com.example.fortnote.NoteManager(this);
+        noteManager = new NoteManager(this);
 
         // Initialize views
-        etNoteTitle = findViewById(R.id.etNoteTitle);
-        etNoteContent = findViewById(R.id.etNoteContent);
-        Button backButton = findViewById(R.id.back_button);
-        Button lockButton = findViewById(R.id.lock_button);
-        Button boldButton = findViewById(R.id.bold_button);
-        Button italicButton = findViewById(R.id.italic_button);
-        Button underlineButton = findViewById(R.id.under_button);
-        Button undoButton = findViewById(R.id.undo_button);
-        Button redoButton = findViewById(R.id.redo_button);
-        FloatingActionButton fabSave = findViewById(R.id.fabSave);
+        etNoteTitle = findViewById(id.etNoteTitle);
+        etNoteContent = findViewById(id.etNoteContent);
+        Button backButton = findViewById(id.back_button);
+        Button lockButton = findViewById(id.lock_button);
+        Button boldButton = findViewById(id.bold_button);
+        Button italicButton = findViewById(id.italic_button);
+        Button underlineButton = findViewById(id.under_button);
+        ImageButton undoButton = findViewById(id.undo_button);
+        ImageButton redoButton = findViewById(id.redo_button);
+        FloatingActionButton fabSave = findViewById(id.fabSave);
 
         // Check if we're editing an existing note
         if (getIntent().hasExtra("note_id")) {
@@ -60,11 +63,7 @@ public class NoteEditorActivity extends AppCompatActivity {
             String content = getIntent().getStringExtra("note_content");
 
             etNoteTitle.setText(title);
-            if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
-                etNoteContent.setText(Html.fromHTML(content, Html.FROM_HTML_MODE_LEGACY));
-            }else{
-                etNoteContent.setText(Html.fromHtml(content));
-            }
+            etNoteContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
         }
 
         // Back button
@@ -100,7 +99,7 @@ public class NoteEditorActivity extends AppCompatActivity {
         // Save button
         fabSave.setOnClickListener(v -> saveNote());
 
-         // Undo / Redo listeners
+        // Undo / Redo listeners
         undoButton.setOnClickListener(v -> undo());
         redoButton.setOnClickListener(v -> redo());
 
@@ -128,7 +127,7 @@ public class NoteEditorActivity extends AppCompatActivity {
         });
     }
 
-     /** Undo last change */
+    /** Undo last change */
     private void undo() {
         if (!undoStack.isEmpty()) {
             String lastState = undoStack.pop();
@@ -193,7 +192,7 @@ public class NoteEditorActivity extends AppCompatActivity {
         }
 
         String title = etNoteTitle.getText().toString().trim();
-        String content = Html.toHtml(etNoteContent.getText(),Html.TO_HTML_PARAGRAPH_LINE_CONSECUTIVE);
+        String content = Html.toHtml(etNoteContent.getText(),Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE);
 
         if (title.isEmpty() && content.isEmpty()) {
             Toast.makeText(this, "Note is empty", Toast.LENGTH_SHORT).show();
@@ -212,7 +211,4 @@ public class NoteEditorActivity extends AppCompatActivity {
         finish();
     }
 }
-
-
-
 
