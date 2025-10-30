@@ -1,5 +1,6 @@
 package com.example.fortnote;
 
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +46,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         String title = note.getTitle().isEmpty() ? "Untitled" : note.getTitle();
         holder.tvTitle.setText(title);
 
-         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
-                holder.tvContent.setText(Html.fromHTML(note.getContent(),Html.FROM_HTML_MODE_LEGACY));
+         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                holder.tvContent.setText(Html.fromHtml(note.getContent(),Html.FROM_HTML_MODE_LEGACY));
             }else{
                 holder.tvContent.setText(Html.fromHtml(note.getContent()));
          }
