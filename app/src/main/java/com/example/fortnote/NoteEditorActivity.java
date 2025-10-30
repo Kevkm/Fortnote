@@ -51,7 +51,7 @@ public class NoteEditorActivity extends AppCompatActivity {
 
             etNoteTitle.setText(title);
             if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
-                etNoteContent.setText(Html.fromHTML(content. HTML.FROM_HTML_MODE_LEGACY));
+                etNoteContent.setText(Html.fromHTML(content, Html.FROM_HTML_MODE_LEGACY));
             }else{
                 etNoteContent.setText(Html.fromHtml(content));
             }
@@ -147,4 +147,5 @@ public class NoteEditorActivity extends AppCompatActivity {
         finish();
     }
 }
+
 
