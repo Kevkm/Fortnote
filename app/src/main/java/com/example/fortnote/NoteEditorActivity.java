@@ -50,7 +50,11 @@ public class NoteEditorActivity extends AppCompatActivity {
             String content = getIntent().getStringExtra("note_content");
 
             etNoteTitle.setText(title);
-            etNoteContent.setText(content);
+            if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
+                etNoteContent.setText(Html.fromHTML(content. HTML.FROM_HTML_MODE_LEGACY));
+            }else{
+                etNoteContent.setText(Html.fromHtml(content));
+            }
         }
 
         // Back button
@@ -124,7 +128,7 @@ public class NoteEditorActivity extends AppCompatActivity {
         }
 
         String title = etNoteTitle.getText().toString().trim();
-        String content = etNoteContent.getText().toString().trim();
+        String content = Html.toHtml(etNoteContent.getText(),Html.TO_HTML_PARAGRAPH_LINE_CONSEECUTIVE);
 
         if (title.isEmpty() && content.isEmpty()) {
             Toast.makeText(this, "Note is empty", Toast.LENGTH_SHORT).show();
@@ -143,3 +147,4 @@ public class NoteEditorActivity extends AppCompatActivity {
         finish();
     }
 }
+
