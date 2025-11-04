@@ -36,6 +36,9 @@ public class NoteEditorActivity extends AppCompatActivity {
     private final Stack<String> redoStack = new Stack<>();
     private boolean isTextChangingProgrammatically = false;
 
+    private long lastEditTime = 0;
+    private static final long UNDO_DELAY = 800; // ms
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,13 +118,20 @@ public class NoteEditorActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (!isTextChangingProgrammatically) {
-                    undoStack.push(previousText);
-                    redoStack.clear();
+                    long now = System.currentTimeMillis();
+
+                    // if enough time passed since last edit -> store snapshot
+                    if (now - lastEditTime > UNDO_DELAY) {
+                        undoStack.push(previousText);
+                        redoStack.clear();
+                    }
+
+                    lastEditTime = now;
                 }
             }
         });
