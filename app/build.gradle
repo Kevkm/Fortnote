@@ -15,11 +15,10 @@ android {
         versionCode 1
         versionName "1.0"
 
-        vectorDrawable {
-            useSupportLibrary = true
-        }
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // vectorDrawables must go here
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildFeatures {
@@ -32,6 +31,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
