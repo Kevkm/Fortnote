@@ -86,17 +86,21 @@
 
         <ImageButton
             android:id="@+id/undo_button"
-            android:layout_width="wrap_content"
-            android:layout_height="39dp"
-            android:src="@android:drawable/ic_menu_revert"
-            android:contentDescription="@string/undo"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_undo"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/undo"
+            android:padding="6dp"/>
 
         <ImageButton
             android:id="@+id/redo_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_redo"
-            android:contentDescription="@string/redo" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_redo"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/redo"
+            android:padding="6dp"/>
 
         <Space
             android:layout_width="0dp"
