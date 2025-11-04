@@ -15,7 +15,15 @@ android {
         versionCode 1
         versionName "1.0"
 
+        vectorDrawable {
+            useSupportLibrary = true
+        }
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     buildTypes {
