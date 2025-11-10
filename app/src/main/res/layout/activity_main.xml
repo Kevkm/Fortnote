@@ -6,6 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fortnite_background"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -23,11 +24,17 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="Fortnote"
-                android:textColor="@android:color/black"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+                android:layout_marginBottom="24dp"
+                android:text="FORTNOTE"
+                android:textColor="@color/fortnite_blue"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/fortnite"
+                android:shadowColor="@color/fortnite_yellow"
+                android:shadowDx="3"
+                android:shadowDy="3"
+                android:shadowRadius="2"
+                android:letterSpacing="0.05" />
 
         </FrameLayout>
 
@@ -40,12 +47,14 @@
         <TextView
             android:id="@+id/tvEmptyState"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_gravity="center"
-            android:text="No notes yet.\nTap + to create one!"
-            android:textSize="16sp"
-            android:textColor="@android:color/darker_gray"
+            android:text="No notes yet.\nTap the button to create one!"
+            android:textSize="18sp"
+            android:textColor="@color/fortnite_blue"
             android:gravity="center"
+            android:fontFamily="sans-serif-medium"
             android:visibility="gone" />
 
     </LinearLayout>
@@ -59,8 +68,8 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/todo"
         app:srcCompat="@android:drawable/ic_input_add"
-        app:backgroundTint="@android:color/holo_blue_dark"
-        app:tint="@android:color/white"
+        app:backgroundTint="@color/fortnite_yellow"
+        app:tint="@android:color/black"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

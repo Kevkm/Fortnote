@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp"
+    android:background="@color/fortnite_background"
     tools:context=".NoteEditorActivity">
 
     <!-- Top button row -->
@@ -14,13 +15,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@color/fortnite_dark"
         android:gravity="center_vertical">
 
         <Button
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/back" />
+            android:text="@string/back"
+            android:backgroundTint="@color/fortnite_blue"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
         <Space
             android:layout_width="0dp"
@@ -30,7 +35,9 @@
         <Button
             android:id="@+id/lock_button"
             android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            android:backgroundTint="@color/fortnite_purple" />
+
 
     </LinearLayout>
 
@@ -42,7 +49,18 @@
         android:hint="@string/note_title"
         android:textSize="18sp"
         android:inputType="text"
+        android:textColor="@color/fortnite_blue"
+        android:textColorHint="@color/fortnite_dark_blue"
+        android:fontFamily="@font/fortnite"
+        android:background="@android:color/transparent"
         android:importantForAutofill="no" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/fortnite_yellow"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="12dp" />
 
     <EditText
         android:id="@+id/etNoteContent"
@@ -53,6 +71,10 @@
         android:hint="@string/write_your_note_here"
         android:inputType="textMultiLine"
         android:scrollbars="vertical"
+        android:textColor="@color/white"
+        android:textColorHint="@color/fortnite_dark_blue"
+        android:fontFamily="sans-serif-medium"
+        android:background="@android:color/transparent"
         android:importantForAutofill="no" />
 
     <!-- Bottom formatting buttons -->
@@ -60,7 +82,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@color/fortnite_dark"
+        android:gravity="center_vertical">
 
         <Button
             android:id="@+id/bold_button"
@@ -68,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="@string/b"
+            android:backgroundTint="@color/fortnite_purple"
             android:textStyle="bold" />
 
         <Button
@@ -76,31 +101,33 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="@string/i"
+            android:backgroundTint="@color/fortnite_purple"
             android:textStyle="italic" />
 
         <Button
             android:id="@+id/under_button"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/fortnite_purple"
             android:text="@string/u" />
 
         <ImageButton
             android:id="@+id/undo_button"
             android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_undo"
-            android:background="@android:color/transparent"
+            android:background="@color/fortnite_purple"
             android:contentDescription="@string/undo"
             android:padding="6dp"/>
 
         <ImageButton
             android:id="@+id/redo_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:srcCompat="@drawable/ic_redo"
-            android:background="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/fortnite_purple"
             android:contentDescription="@string/redo"
-            android:padding="6dp"/>
+            android:padding="6dp"
+            app:srcCompat="@drawable/ic_redo" />
 
         <Space
             android:layout_width="0dp"
@@ -113,6 +140,8 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/save_note"
             app:srcCompat="@android:drawable/ic_menu_save"
+            app:backgroundTint="@color/fortnite_yellow"
+            app:tint="@color/black"
             app:fabSize="mini" />
 
     </LinearLayout>

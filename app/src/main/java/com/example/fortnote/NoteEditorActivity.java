@@ -299,4 +299,3 @@ public class NoteEditorActivity extends AppCompatActivity {
     }
 }
 
-
