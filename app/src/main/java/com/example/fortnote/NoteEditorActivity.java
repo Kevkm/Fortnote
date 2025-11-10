@@ -1,7 +1,7 @@
 package com.example.fortnote;
 
 import static com.example.fortnote.R.*;
-import static com.example.fortnote.R.id.undo_button;
+
 
 import android.graphics.Typeface;
 import android.os.Bundle;
