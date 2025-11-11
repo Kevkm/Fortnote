@@ -93,14 +93,12 @@ public class NoteEditorActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> finish());
 
-        // Lock/Unlock Button (Option A: affects ALL notes)
-        // --- START OF UPDATED BLOCK ---
+
         lockButton.setOnClickListener(v -> {
             isLocked = !isLocked;
 
             if (isLocked) {
-                // --- THIS IS THE NEW "LOCK" FLOW ---
-                // We need a layout for two password fields, create it programmatically
+
                 LinearLayout layout = new LinearLayout(this);
                 layout.setOrientation(LinearLayout.VERTICAL);
                 layout.setPadding(50, 50, 50, 50); // Add some padding
@@ -119,24 +117,22 @@ public class NoteEditorActivity extends AppCompatActivity {
                 builder.setTitle("Set Encryption Password");
                 builder.setView(layout);
 
-                // Set up the buttons
+
                 builder.setPositiveButton("OK", (dialog, which) -> {
                     String password = inputPassword.getText().toString();
                     String confirm = inputConfirm.getText().toString();
 
-                    // VALIDATION: Check if passwords match and are not empty
                     if (password.isEmpty() || !password.equals(confirm)) {
                         Toast.makeText(this, "Passwords do not match or are empty.", Toast.LENGTH_LONG).show();
-                        // IMPORTANT: We failed to lock, so reset the state
+
                         isLocked = false;
-                        return; // Stop execution
+                        return;
                     }
 
-                    // --- This is your original encryption logic, now using the new password ---
                     try {
                         originalContent = etNoteContent.getText().toString();
 
-                        // Use the user's password, NOT the hardcoded one
+
                         noteManager.encryptAllNotes(password);
 
                         etNoteContent.setText(toScrambledText(originalContent));
@@ -150,19 +146,16 @@ public class NoteEditorActivity extends AppCompatActivity {
                         Toast.makeText(this, "Encryption failed", Toast.LENGTH_SHORT).show();
                         isLocked = false; // Reset state on failure
                     }
-                    // --- End of original logic ---
                 });
 
                 builder.setNegativeButton("Cancel", (dialog, which) -> {
                     dialog.cancel();
-                    // User cancelled setting a password, so we are not locked.
                     isLocked = false;
                 });
 
                 builder.show();
 
             } else {
-                // --- THIS IS THE "UNLOCK" FLOW (Unchanged, it's already correct) ---
                 androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
                 builder.setTitle("Enter password to unlock");
 
