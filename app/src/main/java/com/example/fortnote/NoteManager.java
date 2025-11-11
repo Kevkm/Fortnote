@@ -24,19 +24,19 @@ public class NoteManager {
     public void saveNote(String title, String content) {
         List<Note> notes = getAllNotes();
         String id = UUID.randomUUID().toString();
-        long timestamp = System.currentTimeMillis();
-        Note newNote = new Note(id, title, content, timestamp, false);
+        long now = System.currentTimeMillis();
+        Note newNote = new Note(id, title, content, now, now, false);
         notes.add(0, newNote);
         saveAllNotes(notes);
     }
 
     public void updateNote(String id, String title, String content) {
         List<Note> notes = getAllNotes();
-        for (int i = 0; i < notes.size(); i++) {
-            if (notes.get(i).getId().equals(id)) {
-                notes.get(i).setTitle(title);
-                notes.get(i).setContent(content);
-                notes.get(i).setTimestamp(System.currentTimeMillis());
+        for (Note note: notes) {
+            if (note.getId().equals(id)) {
+                note.setTitle(title);
+                note.setContent(content);
+                note.setTimestamp(System.currentTimeMillis());
                 break;
             }
         }
@@ -61,8 +61,10 @@ public class NoteManager {
                 String title = jsonObject.getString("title");
                 String content = jsonObject.getString("content");
                 long timestamp = jsonObject.getLong("timestamp");
+                long creationTimestamp=jsonObject.has("creationTimestamp") ?
+                        jsonObject.getLong("creationTimestamp"):timestamp;
                 boolean locked = jsonObject.has("locked") && jsonObject.getBoolean("locked");
-                Note note = new Note(id, title, content, timestamp, locked);
+                Note note = new Note(id, title, content, timestamp,creationTimestamp, locked);
                 notes.add(note);
             }
         } catch (JSONException e) {
@@ -81,6 +83,8 @@ public class NoteManager {
                 jsonObject.put("content", note.getContent());
                 jsonObject.put("timestamp", note.getTimestamp());
                 jsonObject.put("locked", note.isLocked()); // persist lock state
+                jsonObject.put("creationTimestamp", note.getCreationTimestamp());
+
                 jsonArray.put(jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
