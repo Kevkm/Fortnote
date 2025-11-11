@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +29,10 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     private NoteManager noteManager;
     private TextView tvEmptyState;
 
+    private static final int SORT_DATE_CREATED=0;
+    private static final int SORT_LAST_EDITED=1;
+    private int currentSort=SORT_LAST_EDITED;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +51,21 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         tvEmptyState = findViewById(R.id.tvEmptyState);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        Spinner spinnerSort = findViewById(R.id.spinnerSort);
+        String[] sortOptions={"Date Created","Last Edited"};
+        ArrayAdapter<String> adapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,sortOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSort.setAdapter(adapter);
+
+        spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+                currentSort=position;
+                loadNotes();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent){}
+        });
         // Set up the FAB button
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
@@ -62,6 +84,12 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
 
     private void loadNotes() {
         List<Note> notes = noteManager.getAllNotes();
+
+        if (currentSort == SORT_DATE_CREATED) {
+            notes.sort((n1, n2) -> Long.compare(n2.getCreationTimestamp(), n1.getCreationTimestamp()));
+        } else if (currentSort == SORT_LAST_EDITED) {
+            notes.sort((n1, n2) -> Long.compare(n2.getTimestamp(), n1.getTimestamp()));
+        }
 
         if (notes.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
