@@ -73,7 +73,7 @@
         android:scrollbars="vertical"
         android:textColor="@color/white"
         android:textColorHint="@color/fortnite_dark_blue"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="@font/fortnite"
         android:background="@android:color/transparent"
         android:importantForAutofill="no" />
 
@@ -88,11 +88,11 @@
 
         <Button
             android:id="@+id/bold_button"
-            android:layout_width="74dp"
+            android:layout_width="61dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="@string/b"
             android:backgroundTint="@color/fortnite_purple"
+            android:text="@string/b"
             android:textStyle="bold" />
 
         <Button
@@ -111,23 +111,32 @@
             android:backgroundTint="@color/fortnite_purple"
             android:text="@string/u" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/undo_button"
-            android:layout_width="40dp"
+            style="@style/Widget.Material3.Button.Icon"
+            android:layout_width="48dp"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_undo"
-            android:background="@color/fortnite_purple"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@string/undo"
-            android:padding="6dp"/>
+            app:backgroundTint="@color/fortnite_blue"
+            app:icon="@drawable/ic_undo"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="@color/white" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/redo_button"
-            android:layout_width="wrap_content"
+            style="@style/Widget.Material3.Button.Icon"
+            android:layout_width="47dp"
             android:layout_height="wrap_content"
-            android:background="@color/fortnite_purple"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@string/redo"
-            android:padding="6dp"
-            app:srcCompat="@drawable/ic_redo" />
+            app:backgroundTint="@color/fortnite_blue"
+            app:icon="@drawable/ic_redo"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="@color/white" />
 
         <Space
             android:layout_width="0dp"

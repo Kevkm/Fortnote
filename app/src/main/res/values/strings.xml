@@ -10,4 +10,5 @@
     <string name="redo">Redo</string>
     <string name="undo" />
     <string name="save_note">Save note</string>
+    <string name="sort_by" />
 </resources>

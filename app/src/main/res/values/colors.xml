@@ -7,6 +7,7 @@
     <color name="fortnite_yellow">#FFD700</color>
     <color name="fortnite_dark">#1A1A2E</color>
     <color name="fortnite_background">#16213E</color>
+    <color name="fortnite_note">#2a497d</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 </resources>

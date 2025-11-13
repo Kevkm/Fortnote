@@ -15,8 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import java.util.Stack;
-import android.widget.ImageButton;
-import android.widget.LinearLayout; // <-- ADDED IMPORT
+import com.google.android.material.button.MaterialButton;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -57,8 +57,8 @@ public class NoteEditorActivity extends AppCompatActivity {
         Button boldButton = findViewById(id.bold_button);
         Button italicButton = findViewById(id.italic_button);
         Button underlineButton = findViewById(id.under_button);
-        ImageButton undoButton = findViewById(id.undo_button);
-        ImageButton redoButton = findViewById(id.redo_button);
+        MaterialButton undoButton = findViewById(id.undo_button);
+        MaterialButton redoButton = findViewById(id.redo_button);
         FloatingActionButton fabSave = findViewById(id.fabSave);
 
         if (getIntent().hasExtra("note_id")) {
