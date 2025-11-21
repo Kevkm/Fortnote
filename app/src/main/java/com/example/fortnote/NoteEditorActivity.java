@@ -2,7 +2,6 @@ package com.example.fortnote;
 
 import static com.example.fortnote.R.*;
 
-
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +13,7 @@ import android.text.style.UnderlineSpan;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import java.util.Stack;
 import com.google.android.material.button.MaterialButton;
 import android.widget.LinearLayout;
@@ -40,8 +40,7 @@ public class NoteEditorActivity extends AppCompatActivity {
     private long lastEditTime = 0;
     private static final long UNDO_DELAY = 800;
 
-    // Keep a local copy for scrambling when user locks (session-only)
-    private String originalContent = "";
+    private String originalHtml = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,178 +63,52 @@ public class NoteEditorActivity extends AppCompatActivity {
         if (getIntent().hasExtra("note_id")) {
             isEditMode = true;
             noteId = getIntent().getStringExtra("note_id");
-            String title = getIntent().getStringExtra("note_title");
-            String content = getIntent().getStringExtra("note_content");
-
-            etNoteTitle.setText(title);
-            etNoteContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
+            etNoteTitle.setText(getIntent().getStringExtra("note_title"));
+            etNoteContent.setText(Html.fromHtml(getIntent().getStringExtra("note_content")));
         }
 
-        // On open, enforce locked state from storage (prevents edit after reopen)
         if (isEditMode) {
             List<Note> all = noteManager.getAllNotes();
             for (Note n : all) {
                 if (n.getId().equals(noteId)) {
                     isLocked = n.isLocked();
                     if (isLocked) {
-                        // Show scrambled placeholder and disable editing
-                        etNoteContent.setText(toScrambledTextOfLength(n.getContent() != null ? n.getContent().length() : 16));
-                        etNoteTitle.setEnabled(false);
+                        int len = n.getPlaintextLength() > 0 ? n.getPlaintextLength() : 16;
+                        etNoteContent.setText(scrambleFromLengthPreserveSpaces(len));
                         etNoteContent.setEnabled(false);
+                        etNoteTitle.setEnabled(false);
                         lockButton.setBackgroundResource(android.R.drawable.ic_lock_lock);
                     } else {
                         lockButton.setBackgroundResource(android.R.drawable.ic_lock_idle_lock);
                     }
-                    break;
                 }
             }
         }
 
         backButton.setOnClickListener(v -> finish());
 
-        // Lock/Unlock Button (Option A: affects ALL notes)
-        // --- START OF UPDATED BLOCK ---
         lockButton.setOnClickListener(v -> {
-            isLocked = !isLocked;
-
-            if (isLocked) {
-                // --- THIS IS THE NEW "LOCK" FLOW ---
-                // We need a layout for two password fields, create it programmatically
-                LinearLayout layout = new LinearLayout(this);
-                layout.setOrientation(LinearLayout.VERTICAL);
-                layout.setPadding(50, 50, 50, 50); // Add some padding
-
-                final EditText inputPassword = new EditText(this);
-                inputPassword.setHint("Enter Password");
-                inputPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                layout.addView(inputPassword);
-
-                final EditText inputConfirm = new EditText(this);
-                inputConfirm.setHint("Confirm Password");
-                inputConfirm.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                layout.addView(inputConfirm);
-
-                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-                builder.setTitle("Set Encryption Password");
-                builder.setView(layout);
-
-                // Set up the buttons
-                builder.setPositiveButton("OK", (dialog, which) -> {
-                    String password = inputPassword.getText().toString();
-                    String confirm = inputConfirm.getText().toString();
-
-                    // VALIDATION: Check if passwords match and are not empty
-                    if (password.isEmpty() || !password.equals(confirm)) {
-                        Toast.makeText(this, "Passwords do not match or are empty.", Toast.LENGTH_LONG).show();
-                        // IMPORTANT: We failed to lock, so reset the state
-                        isLocked = false;
-                        return; // Stop execution
-                    }
-
-                    // --- This is your original encryption logic, now using the new password ---
-                    try {
-                        originalContent = etNoteContent.getText().toString();
-
-                        // Use the user's password, NOT the hardcoded one
-                        noteManager.encryptAllNotes(password);
-
-                        etNoteContent.setText(toScrambledText(originalContent));
-                        etNoteTitle.setEnabled(false);
-                        etNoteContent.setEnabled(false);
-
-                        lockButton.setBackgroundResource(android.R.drawable.ic_lock_lock);
-                        Toast.makeText(this, "Note locked", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Encryption failed", Toast.LENGTH_SHORT).show();
-                        isLocked = false; // Reset state on failure
-                    }
-                    // --- End of original logic ---
-                });
-
-                builder.setNegativeButton("Cancel", (dialog, which) -> {
-                    dialog.cancel();
-                    // User cancelled setting a password, so we are not locked.
-                    isLocked = false;
-                });
-
-                builder.show();
-
-            } else {
-                // --- THIS IS THE "UNLOCK" FLOW (Unchanged, it's already correct) ---
-                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-                builder.setTitle("Enter password to unlock");
-
-                final EditText input = new EditText(this);
-                input.setHint("Password");
-                input.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                builder.setView(input);
-
-                builder.setPositiveButton("OK", (dialog, which) -> {
-                    String password = input.getText().toString();
-                    try {
-                        // Use decrypted list directly and persist
-                        List<Note> decryptedNotes = noteManager.getAllNotesDecrypted(password);
-
-                        for (Note note : decryptedNotes) {
-                            if (note.getId().equals(noteId)) {
-                                // Restore the exact HTML content
-                                etNoteContent.setText(Html.fromHtml(note.getContent(), Html.FROM_HTML_MODE_LEGACY));
-                                break;
-                            }
-                        }
-
-                        etNoteTitle.setEnabled(true);
-                        etNoteContent.setEnabled(true);
-
-                        lockButton.setBackgroundResource(android.R.drawable.ic_lock_idle_lock);
-                        Toast.makeText(this, "Note unlocked", Toast.LENGTH_SHORT).show();
-                        isLocked = false;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Wrong password", Toast.LENGTH_SHORT).show();
-                        isLocked = true; // Stay locked
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", (dialog, which) -> {
-                    dialog.cancel();
-                    isLocked = true; // Stay locked
-                });
-
-                builder.show();
-            }
+            if (!isLocked) lockNote(lockButton);
+            else unlockNote(lockButton);
         });
-        // --- END OF UPDATED BLOCK ---
-
-        lockButton.setBackgroundResource(android.R.drawable.ic_lock_idle_lock);
 
         boldButton.setOnClickListener(v -> applyStyle(Typeface.BOLD));
         italicButton.setOnClickListener(v -> applyStyle(Typeface.ITALIC));
         underlineButton.setOnClickListener(v -> applyUnderline());
+
         fabSave.setOnClickListener(v -> saveNote());
         undoButton.setOnClickListener(v -> undo());
         redoButton.setOnClickListener(v -> redo());
 
         etNoteContent.addTextChangedListener(new TextWatcher() {
-            private String previousText = "";
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (!isTextChangingProgrammatically) {
-                    previousText = s.toString();
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
+            private String before = "";
+            @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) { before = s.toString(); }
+            @Override public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            @Override public void afterTextChanged(Editable s) {
                 if (!isTextChangingProgrammatically) {
                     long now = System.currentTimeMillis();
                     if (now - lastEditTime > UNDO_DELAY) {
-                        undoStack.push(previousText);
+                        undoStack.push(before);
                         redoStack.clear();
                     }
                     lastEditTime = now;
@@ -244,104 +117,174 @@ public class NoteEditorActivity extends AppCompatActivity {
         });
     }
 
-    // Scramble based on actual text (used immediately on locking)
-    private String toScrambledText(String text) {
-        String symbols = "ÆØΔ¥$#@%&*?¶Ω≈≠±";
-        StringBuilder scrambled = new StringBuilder();
-        for (char c : text.toCharArray()) {
-            if (Character.isWhitespace(c)) {
-                scrambled.append(c);
-            } else {
-                scrambled.append(symbols.charAt((int)(Math.random() * symbols.length())));
-            }
-        }
-        return scrambled.toString();
+    
+    private void lockNote(Button lockButton) {
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 50, 50, 50);
+
+        EditText p1Field = new EditText(this);
+        p1Field.setHint("Enter Password");
+        p1Field.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        layout.addView(p1Field);
+
+        EditText p2Field = new EditText(this);
+        p2Field.setHint("Confirm Password");
+        p2Field.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        layout.addView(p2Field);
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Lock Note")
+                .setView(layout)
+                .setPositiveButton("OK", (d, w) -> {
+
+                    String p1 = p1Field.getText().toString();
+                    String p2 = p2Field.getText().toString();
+
+                    if (p1.isEmpty() || !p1.equals(p2)) {
+                        Toast.makeText(this,"Passwords do not match",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    originalHtml = Html.toHtml(etNoteContent.getText());
+
+                    int len = Html.fromHtml(originalHtml).toString().length();
+
+                    noteManager.updateNote(noteId,
+                            etNoteTitle.getText().toString(),
+                            originalHtml); 
+                    List<Note> all = noteManager.getAllNotes();
+                    for (Note n : all) {
+                        if (n.getId().equals(noteId)) {
+                            n.setPlaintextLength(len);
+                            break;
+                        }
+                    }
+
+                    boolean ok = noteManager.encryptNote(noteId, p1);
+                    if (!ok) {
+                        Toast.makeText(this,"Encryption failed",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    etNoteContent.setText(scrambleFromLengthPreserveSpaces(len));
+                    etNoteContent.setEnabled(false);
+                    etNoteTitle.setEnabled(false);
+
+                    lockButton.setBackgroundResource(android.R.drawable.ic_lock_lock);
+                    isLocked = true;
+                    Toast.makeText(this,"Note locked",Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
-    // Scramble to a fixed length (used when reopening locked notes)
-    private String toScrambledTextOfLength(int length) {
-        if (length <= 0) length = 16;
+    
+    private void unlockNote(Button lockButton) {
+
+        EditText passField = new EditText(this);
+        passField.setHint("Password");
+        passField.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Unlock Note")
+                .setView(passField)
+                .setPositiveButton("OK", (d, w) -> {
+
+                    String pass = passField.getText().toString();
+                    String decrypted = noteManager.decryptNote(noteId, pass);
+
+                    if (decrypted == null) {
+                        Toast.makeText(this,"Wrong password",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    etNoteContent.setText(Html.fromHtml(decrypted));
+                    etNoteContent.setEnabled(true);
+                    etNoteTitle.setEnabled(true);
+
+                    lockButton.setBackgroundResource(android.R.drawable.ic_lock_idle_lock);
+                    isLocked = false;
+
+                    Toast.makeText(this,"Note unlocked",Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+   
+    private String scrambleFromLengthPreserveSpaces(int length) {
         String symbols = "ÆØΔ¥$#@%&*?¶Ω≈≠±";
-        StringBuilder scrambled = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
+
+        
         for (int i = 0; i < length; i++) {
-            scrambled.append(symbols.charAt((int)(Math.random() * symbols.length())));
+            sb.append(symbols.charAt((int)(Math.random() * symbols.length())));
         }
-        return scrambled.toString();
+
+        return sb.toString();
     }
 
     private void undo() {
         if (!undoStack.isEmpty()) {
-            String lastState = undoStack.pop();
+            String last = undoStack.pop();
             redoStack.push(etNoteContent.getText().toString());
             isTextChangingProgrammatically = true;
-            etNoteContent.setText(lastState);
-            etNoteContent.setSelection(lastState.length());
+            etNoteContent.setText(last);
+            etNoteContent.setSelection(last.length());
             isTextChangingProgrammatically = false;
-        } else {
-            Toast.makeText(this, "Nothing to undo", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void redo() {
         if (!redoStack.isEmpty()) {
-            String nextState = redoStack.pop();
+            String next = redoStack.pop();
             undoStack.push(etNoteContent.getText().toString());
             isTextChangingProgrammatically = true;
-            etNoteContent.setText(nextState);
-            etNoteContent.setSelection(nextState.length());
+            etNoteContent.setText(next);
+            etNoteContent.setSelection(next.length());
             isTextChangingProgrammatically = false;
-        } else {
-            Toast.makeText(this, "Nothing to redo", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void applyStyle(int style) {
         int start = etNoteContent.getSelectionStart();
         int end = etNoteContent.getSelectionEnd();
-        if (start >= end) {
-            Toast.makeText(this, "Please select text first", Toast.LENGTH_SHORT).show();
-            return;
+        if (start < end) {
+            SpannableStringBuilder span = new SpannableStringBuilder(etNoteContent.getText());
+            span.setSpan(new StyleSpan(style), start, end, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+            etNoteContent.setText(span);
+            etNoteContent.setSelection(start, end);
         }
-        SpannableStringBuilder spannable = new SpannableStringBuilder(etNoteContent.getText());
-        spannable.setSpan(new StyleSpan(style), start, end, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
-        etNoteContent.setText(spannable);
-        etNoteContent.setSelection(start, end);
     }
 
     private void applyUnderline() {
         int start = etNoteContent.getSelectionStart();
         int end = etNoteContent.getSelectionEnd();
-        if (start >= end) {
-            Toast.makeText(this, "Please select text first", Toast.LENGTH_SHORT).show();
-            return;
+        if (start < end) {
+            SpannableStringBuilder span = new SpannableStringBuilder(etNoteContent.getText());
+            span.setSpan(new UnderlineSpan(), start, end, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+            etNoteContent.setText(span);
+            etNoteContent.setSelection(start, end);
         }
-        SpannableStringBuilder spannable = new SpannableStringBuilder(etNoteContent.getText());
-        spannable.setSpan(new UnderlineSpan(), start, end, SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
-        etNoteContent.setText(spannable);
-        etNoteContent.setSelection(start, end);
     }
 
     private void saveNote() {
         if (isLocked) {
-            Toast.makeText(this, "Note is locked. Unlock to save changes.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Unlock first",Toast.LENGTH_SHORT).show();
             return;
         }
 
         String title = etNoteTitle.getText().toString().trim();
-        String content = Html.toHtml(etNoteContent.getText(), Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE);
-
-        if (title.isEmpty() && content.isEmpty()) {
-            Toast.makeText(this, "Note is empty", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        String content = Html.toHtml(etNoteContent.getText());
 
         if (isEditMode) {
             noteManager.updateNote(noteId, title, content);
-            Toast.makeText(this, "Note updated!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Note updated!",Toast.LENGTH_SHORT).show();
         } else {
             noteManager.saveNote(title, content);
-            Toast.makeText(this, "Note saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Note saved!",Toast.LENGTH_SHORT).show();
         }
 
         finish();
