@@ -1,4 +1,4 @@
-#Fortnote- An Encrypted Notes App
+'#'Fortnote- An Encrypted Notes App
 ----------------------------------------------
 Fortnote is an Android application designed to store notes in a secure and private way. Fortnote allows
 users to take notes on their phone and encrypt the note with the touch of a button. This application
