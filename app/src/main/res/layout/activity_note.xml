@@ -73,7 +73,7 @@
         android:scrollbars="vertical"
         android:textColor="@color/white"
         android:textColorHint="@color/fortnite_dark_blue"
-        android:fontFamily="@font/fortnite"
+        android:fontFamily="sans-serif-medium"
         android:background="@android:color/transparent"
         android:importantForAutofill="no" />
 
