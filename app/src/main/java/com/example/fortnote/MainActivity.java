@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     private NoteAdapter noteAdapter;
     private NoteManager noteManager;
     private TextView tvEmptyState;
+
 
     private static final int SORT_DATE_CREATED=0;
     private static final int SORT_LAST_EDITED=1;
@@ -66,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             @Override
             public void onNothingSelected(AdapterView<?> parent){}
         });
-        // Set up the FAB button
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, NoteEditorActivity.class);
