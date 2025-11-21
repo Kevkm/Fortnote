@@ -1,6 +1,7 @@
 package com.example.fortnote;
 
 import android.os.Build;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import android.text.Html;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
@@ -46,21 +45,26 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         String title = note.getTitle().isEmpty() ? "Untitled" : note.getTitle();
         holder.tvTitle.setText(title);
 
-         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-                holder.tvContent.setText(Html.fromHtml(note.getContent(),Html.FROM_HTML_MODE_LEGACY));
-            }else{
+   
+        if (note.isLocked()) {
+            int len = note.getPlaintextLength() > 0 ? note.getPlaintextLength() : 16;
+            holder.tvContent.setText(scrambleFromLengthPreserveSpaces(len));
+        }
+
+        
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                holder.tvContent.setText(Html.fromHtml(note.getContent(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
                 holder.tvContent.setText(Html.fromHtml(note.getContent()));
-         }
+            }
+        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
-        String dateStr = sdf.format(new Date(note.getTimestamp()));
-        holder.tvDate.setText(dateStr);
+        holder.tvDate.setText(sdf.format(new Date(note.getTimestamp())));
 
         holder.itemView.setOnClickListener(v -> listener.onNoteClick(note));
-        holder.itemView.setOnLongClickListener(v -> {
-            listener.onNoteLongClick(note);
-            return true;
-        });
+        holder.itemView.setOnLongClickListener(v -> { listener.onNoteLongClick(note); return true; });
     }
 
     @Override
@@ -73,6 +77,19 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         notifyDataSetChanged();
     }
 
+    
+    private String scrambleFromLengthPreserveSpaces(int length) {
+        String symbols = "ÆØΔ¥$#@%&*?¶Ω≈≠±";
+        StringBuilder sb = new StringBuilder();
+
+      
+        for (int i = 0; i < length; i++) {
+            sb.append(symbols.charAt((int) (Math.random() * symbols.length())));
+        }
+
+        return sb.toString();
+    }
+
     static class NoteViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvContent, tvDate;
 
@@ -83,5 +100,4 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             tvDate = itemView.findViewById(R.id.tvNoteDate);
         }
     }
-
 }
