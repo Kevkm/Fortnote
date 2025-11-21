@@ -19,6 +19,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
     private List<Note> notes;
     private OnNoteClickListener listener;
+    private boolean sortByCreationDate=false;
+    public void setSortByCreationDate(boolean sortByCreationDate){
+        this.sortByCreationDate=sortByCreationDate;
+        notifyDataSetChanged();
+    }
 
     public interface OnNoteClickListener {
         void onNoteClick(Note note);
@@ -59,9 +64,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
                 holder.tvContent.setText(Html.fromHtml(note.getContent()));
             }
         }
-
+long timeStampToShow=sortByCreationDate ? note.getCreationTimestamp() : note.getTimestamp();
+        String prefix= sortByCreationDate? "Created: " : "Edited: ";
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
-        holder.tvDate.setText(sdf.format(new Date(note.getTimestamp())));
+        holder.tvDate.setText(prefix+ sdf.format(new Date(timeStampToShow)));
 
         holder.itemView.setOnClickListener(v -> listener.onNoteClick(note));
         holder.itemView.setOnLongClickListener(v -> { listener.onNoteLongClick(note); return true; });
@@ -101,3 +107,4 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         }
     }
 }
+
