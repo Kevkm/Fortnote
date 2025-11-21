@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         } else {
             noteAdapter.updateNotes(notes);
         }
+        noteAdapter.setSortByCreationDate(currentSort==SORT_DATE_CREATED);
     }
 
     @Override
