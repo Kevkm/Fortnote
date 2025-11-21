@@ -6,7 +6,8 @@ aims to provide a safe way to take notes in many different work forces or person
 
 Features
 ----------------------------------------------
-##File Management
+File Management
+----------
 -Create a New Note: Create a note by pressing the plus sign in the bottom right. 
 
 -Edit Note: By simply pressing on the screen you can add a title and information to your note.
@@ -18,11 +19,13 @@ Features
 -Save Note: Save the note at any time using the Save icon in the lower right inside the note. 
 
 Text Formatting
+----------
 -Bold,Italic,Underline: By using the buttons at the botton with highlighted text you can bolden,underline, or italiize words.
 
 -Undo/Redo: Using the buttons at the bottom of the screen you can revert or redo changes in case of mistakes.
 
 Encryption
+--------
 -Password Protection: Lock notes with a password for encryption to ensure no unauthorized users access the note.
 
 -Encryption AES: (SAVE BEFORE ENCRYPTING) By pressing the lock button and inputting a password notes are encrypted using AES. 
