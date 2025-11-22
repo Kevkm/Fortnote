@@ -31,7 +31,10 @@ Encryption
 -Encryption AES: (SAVE BEFORE ENCRYPTING) By pressing the lock button and inputting a password notes are encrypted using AES. 
 
 -Salted Hash: Each note has a unique salt to enhance encryption security.
+
+
 Getting Started
+
 Fortnote is currently an Android-only application. It requires Android 7.0 (API 24) or higher.
 From Release
 
