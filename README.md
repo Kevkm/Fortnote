@@ -34,6 +34,7 @@ Encryption
 
 
 Getting Started
+----------
 
 Fortnote is currently an Android-only application. It requires Android 7.0 (API 24) or higher.
 From Release
