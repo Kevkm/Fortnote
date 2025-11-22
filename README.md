@@ -31,4 +31,48 @@ Encryption
 -Encryption AES: (SAVE BEFORE ENCRYPTING) By pressing the lock button and inputting a password notes are encrypted using AES. 
 
 -Salted Hash: Each note has a unique salt to enhance encryption security.
+Getting Started
+Fortnote is currently an Android-only application. It requires Android 7.0 (API 24) or higher.
+From Release
 
+Download the Latest Release:
+
+Navigate to the Releases page on the GitHub repository.
+
+
+Install the APK:
+
+Enable "Install from Unknown Sources" in your Android settings if prompted.
+Open the downloaded .apk file and follow the installation instructions.
+
+
+Launch the Application:
+
+Find Fortnote in your app drawer and tap to open.
+
+
+
+Building From Source Code
+
+Note: Ensure you have Android Studio installed with the Android SDK before proceeding.
+
+
+Clone the Repository:
+
+bash   git clone https://github.com/YourUsername/Fortnote.git
+
+Open in Android Studio:
+
+   Open Android Studio → File → Open → Select the Fortnote folder
+
+Sync Gradle:
+
+   Wait for Android Studio to sync the project with Gradle files
+
+Build the Project:
+
+   Build → Make Project (or press Ctrl+F9)
+
+Run the App:
+
+   Run → Run 'app' (or press Shift+F10)
